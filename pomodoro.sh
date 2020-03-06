@@ -20,12 +20,14 @@ desktop_notification() {
   local icon="$1"
   local message="$2"
 
-  $command_notify_send \
-    --urgency="critical" \
-    --app-name="Pomodoro" \
-    --icon="/usr/share/icons/gnome/48x48/emotes/$icon.png" \
-    --category="presence" \
-    "$message"
+  if [[ -x "$command_notify_send" && "$DESKTOP_SESSION" == "gnome" ]]; then
+    "$command_notify_send" \
+      --urgency="critical" \
+      --app-name="Pomodoro" \
+      --icon="/usr/share/icons/gnome/48x48/emotes/$icon.png" \
+      --category="presence" \
+      "$message"
+  fi
 }
 
 

@@ -54,6 +54,8 @@ pomodoro_timer() {
         wait_minute=false
       fi
 
+      desktop_notification "face-glasses" "Time to work for $timer minutes"
+
     elif (( work_left > 0 && (minutes % 10) == 0 )); then
       printf "Work for %s minutes\n" "$work_left"
     fi
@@ -62,10 +64,6 @@ pomodoro_timer() {
       sleep 60
     fi
     done
-
-    if (( work_left == 0 )); then
-          desktop_notification "face-glasses" "Time to work for $timer minutes"
-    fi
 }
 
 

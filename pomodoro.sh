@@ -5,7 +5,6 @@ break_time="1800"
 breaks="4"
 break_counter="0"
 wait_minute=true
-
 command_notify_send="/usr/bin/notify-send"
 
 
@@ -43,14 +42,14 @@ pomodoro_timer() {
       local breaks_taken=$(( breaks - break_counter ))
 
       if (( breaks_taken < 0 )); then
-        printf "Time to have a long break of %s minutes\n" "$(( break_time / 60 ))"
+        printf "%s Time to have a long break of %s minutes\n" "$(date +%H:%M)" "$(( break_time / 60 ))"
         desktop_notification "face-cool" "Time to have a long break of $(( break_time / 60 )) minutes"
         sleep "$break_time"
         break_counter=0
         wait_minute=false
 
       elif (( breaks_taken >= 0 )); then
-        printf "Time to have a short break of 5 minutes %s\n" "($break_counter/$breaks)"
+        printf "%s Time to have a short break of 5 minutes %s\n" "$(date +%H:%M)" "($break_counter/$breaks)"
         desktop_notification "face-tired" "Time to have a short break of 5 minutes ($break_counter/$breaks)"
         sleep 300
         wait_minute=false
@@ -59,7 +58,7 @@ pomodoro_timer() {
       desktop_notification "face-glasses" "Time to work for $timer minutes"
 
     elif (( work_left > 0 && (minutes % 10) == 0 )); then
-      printf "Work for %s minutes\n" "$work_left"
+      printf "%s Work for %s minutes\n" "$(date +%H:%M)" "$work_left"
     fi
 
     if "$wait_minute"; then

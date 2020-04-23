@@ -1,17 +1,19 @@
 #!/bin/bash
 
 declare -r work_time="1500"
+break_counter="0"
 break_time="1800"
 breaks="4"
-break_counter="0"
+prompt=false
 wait_minute=true
 command_notify_send="/usr/bin/notify-send"
 
 
 usage() {
   printf "  This program helps managing time using the Pomodoro technique\n"
-  printf "    -b, --breaks\t\tSets the amount of short breaks before a long break\n"
-  printf "    -t, --break-time\t\tSets the time for the long breaks\n"
+  printf "    -b, --breaks      Sets the amount of short breaks before a long break\n"
+  printf "    -p, --prompt      Enables keyboard interaction to initiate each break\n"
+  printf "    -t, --break-time  Sets the time for the long breaks\n"
 }
 
 
@@ -30,6 +32,14 @@ desktop_notification() {
 }
 
 
+break_prompt() {
+  if "$prompt"; then
+    read -p "--:-- Press enter to start break"
+    printf "%s Break started\n" "$(date +%H:%M)"
+  fi
+}
+
+
 pomodoro_timer() {
   local timer=$(( $1 / 60 ))
   wait_minute=true
@@ -44,6 +54,7 @@ pomodoro_timer() {
       if (( breaks_taken < 0 )); then
         printf "%s Time to have a long break of %s minutes\n" "$(date +%H:%M)" "$(( break_time / 60 ))"
         desktop_notification "face-cool" "Time to have a long break of $(( break_time / 60 )) minutes"
+        break_prompt
         sleep "$break_time"
         break_counter=0
         wait_minute=false
@@ -51,6 +62,7 @@ pomodoro_timer() {
       elif (( breaks_taken >= 0 )); then
         printf "%s Time to have a short break of 5 minutes %s\n" "$(date +%H:%M)" "($break_counter/$breaks)"
         desktop_notification "face-tired" "Time to have a short break of 5 minutes ($break_counter/$breaks)"
+        break_prompt
         sleep 300
         wait_minute=false
       fi
@@ -73,6 +85,10 @@ while (( $# > 0 )); do
     -b | --breaks)
       shift
       breaks="$1"
+      ;;
+    -p | --prompt)
+      shift
+      prompt=true
       ;;
     -t | --break-time)
       shift

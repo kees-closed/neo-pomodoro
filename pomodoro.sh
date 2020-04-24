@@ -4,9 +4,12 @@ declare -r work_time="1500"
 break_counter="0"
 break_time="1800"
 breaks="4"
+command_notify_send="/usr/bin/notify-send"
+icon_break_over="face-glasses"
+icon_long_break="face-cool"
+icon_short_break="face-tired"
 prompt=false
 wait_minute=true
-command_notify_send="/usr/bin/notify-send"
 
 
 usage() {
@@ -21,7 +24,7 @@ desktop_notification() {
   local icon="$1"
   local message="$2"
 
-  if "$prompt"; then
+  if [[ "$prompt" && "$icon" != "$icon_break_over" ]]; then
     message+=" (check prompt)"
   fi
 
@@ -57,7 +60,7 @@ pomodoro_timer() {
 
       if (( breaks_taken < 0 )); then
         printf "%s Time to have a long break of %s minutes\n" "$(date +%H:%M)" "$(( break_time / 60 ))"
-        desktop_notification "face-cool" "Time to have a long break of $(( break_time / 60 )) minutes"
+        desktop_notification "$icon_long_break" "Time to have a long break of $(( break_time / 60 )) minutes"
         break_prompt
         sleep "$break_time"
         break_counter=0
@@ -65,13 +68,13 @@ pomodoro_timer() {
 
       elif (( breaks_taken >= 0 )); then
         printf "%s Time to have a short break of 5 minutes %s\n" "$(date +%H:%M)" "($break_counter/$breaks)"
-        desktop_notification "face-tired" "Time to have a short break of 5 minutes ($break_counter/$breaks)"
+        desktop_notification "$icon_short_break" "Time to have a short break of 5 minutes ($break_counter/$breaks)"
         break_prompt
         sleep 300
         wait_minute=false
       fi
 
-      desktop_notification "face-glasses" "Time to work for $timer minutes"
+      desktop_notification "$icon_break_over" "Time to work for $timer minutes"
 
     elif (( work_left > 0 && (minutes % 10) == 0 )); then
       printf "%s Work for %s minutes\n" "$(date +%H:%M)" "$work_left"

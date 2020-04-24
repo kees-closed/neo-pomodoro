@@ -21,6 +21,10 @@ desktop_notification() {
   local icon="$1"
   local message="$2"
 
+  if "$prompt"; then
+    message+=" (check prompt)"
+  fi
+
   if [[ -x "$command_notify_send" && "$DESKTOP_SESSION" == "gnome" ]]; then
     "$command_notify_send" \
       --urgency="critical" \

@@ -24,7 +24,7 @@ desktop_notification() {
   local icon="$1"
   local message="$2"
 
-  if [[ "$prompt" && "$icon" != "$icon_break_over" ]]; then
+  if [[ "$prompt" == true && "$icon" != "$icon_break_over" ]]; then
     message+=" (check prompt)"
   fi
 

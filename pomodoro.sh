@@ -114,7 +114,7 @@ while (( $# > 0 )); do
 done
 
 
-printf "Pomodoro timer started\n"
+printf -- "--:-- Pomodoro timer started\n"
 while true; do
   pomodoro_timer "$work_time"
 done

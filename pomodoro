@@ -132,7 +132,6 @@ while (( $# > 0 )); do
       fi
       ;;
     -i | --interactive)
-      shift
       interactive=true
       ;;
     -t | --break-time)

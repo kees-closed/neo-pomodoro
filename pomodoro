@@ -58,18 +58,18 @@ interactive_prompt() {
     case "$option" in
       i | I)
         interactive=false
-        printf "%s Break started, interactive mode disabled\n" "$(date +%H:%M)"
+        printf "%(%R)T Break started, interactive mode disabled\n" -1
         ;;
       l | L)
         if [[ "$long_break" != true ]]; then
           break_counter=0
-          printf "%s Starting forced long break of %s minutes\n" "$(date +%H:%M)" "$(( break_time / 60 ))"
+          printf "%(%R)T Starting forced long break of %s minutes\n" -1 "$(( break_time / 60 ))"
           return 3
         fi
-        printf "%s Starting long break of %s minutes (already scheduled)\n" "$(date +%H:%M)" "$(( break_time / 60 ))"
+        printf "%(%R)T Starting long break of %s minutes (already scheduled)\n" -1 "$(( break_time / 60 ))"
         ;;
       * )
-        printf "%s Starting break\n" "$(date +%H:%M)"
+        printf "%(%R)T Starting break\n" -1
         ;;
     esac
   fi
@@ -90,14 +90,14 @@ pomodoro_timer() {
       if (( breaks_taken < 0 )); then
         wait_minute=false
         break_counter=0
-        printf "%s Time to have a long break of %s minutes\n" "$(date +%H:%M)" "$(( break_time / 60 ))"
+        printf "%(%R)T Time to have a long break of %s minutes\n" -1 "$(( break_time / 60 ))"
         desktop_notification "$icon_long_break" "Time to have a long break of $(( break_time / 60 )) minutes"
         interactive_prompt true
         sleep "$break_time"
 
       elif (( breaks_taken >= 0 )); then
         wait_minute=false
-        printf "%s Time to have a short break of 5 minutes %s\n" "$(date +%H:%M)" "($break_counter/$breaks)"
+        printf "%(%R)T Time to have a short break of 5 minutes %s\n" -1 "($break_counter/$breaks)"
         desktop_notification "$icon_short_break" "Time to have a short break of 5 minutes ($break_counter/$breaks)"
         interactive_prompt
         if (( $? == 3 )); then
@@ -110,7 +110,7 @@ pomodoro_timer() {
       desktop_notification "$icon_break_over" "Time to work for $timer minutes"
 
     elif (( work_left > 0 && (minutes % 10) == 0 )); then
-      printf "%s Work for %s minutes\n" "$(date +%H:%M)" "$work_left"
+      printf "%(%R)T Work for %s minutes\n" -1 "$work_left"
     fi
 
     if "$wait_minute"; then

@@ -9,6 +9,14 @@ icon_break_over="face-glasses"
 icon_long_break="face-cool"
 icon_short_break="face-tired"
 
+trap ctrl_c INT
+
+
+ctrl_c() {
+  printf -- "\n--:-- Pomodoro timer stopped\n"
+  exit 0
+}
+
 
 usage() {
   printf "This program helps managing time using the Pomodoro technique\n\n"
@@ -44,10 +52,10 @@ interactive_prompt() {
   local option
 
   if [[ "$interactive" == true ]]; then
-    printf -- "--:-- Interactive mode options defined below
---:-- Enter ::= Start intended break
+    printf -- "--:-- Enter ::= Start intended break
+--:-- s | S ::= Skip intended break
 --:-- l | L ::= Start long break
---:-- i | I ::= Disable interactive mode\n"
+--:-- i | I ::= Stop interactive mode\n"
 
     while (( "${#option[@]}" != 1 || "${#option}" != 1 )); do
       read -rp "--:-- Choose one option: " option
@@ -68,6 +76,10 @@ interactive_prompt() {
           return 3
         fi
         printf "%(%R)T Starting already intended long break of %s minutes\n" -1 "$(( break_time / 60 ))"
+        ;;
+      s | S)
+        printf "%(%R)T Skipping break\n" -1
+        return 4
         ;;
       * )
         printf "%(%R)T Starting break\n" -1
@@ -94,16 +106,26 @@ pomodoro_timer() {
         printf "%(%R)T Time to have a long break of %s minutes\n" -1 "$(( break_time / 60 ))"
         desktop_notification "$icon_long_break" "Time to have a long break of $(( break_time / 60 )) minutes"
         interactive_prompt true
+        case "$?" in
+          4)
+            continue
+            ;;
+        esac
         sleep "$break_time"
 
       elif (( breaks_taken >= 0 )); then
         printf "%(%R)T Time to have a short break of 5 minutes %s\n" -1 "($break_counter/$breaks)"
         desktop_notification "$icon_short_break" "Time to have a short break of 5 minutes ($break_counter/$breaks)"
         interactive_prompt
-        if (( $? == 3 )); then
-          sleep "$break_time"
-          continue
-        fi
+        case "$?" in
+          3)
+            sleep "$break_time"
+            continue
+            ;;
+          4)
+            continue
+            ;;
+        esac
         sleep 300
       fi
 

@@ -45,9 +45,9 @@ interactive_prompt() {
 
   if [[ "$interactive" == true ]]; then
     printf -- "--:-- Interactive mode options defined below
---:-- Enter :== Start intended break
---:-- l | L :== Start long break
---:-- i | I :== Disable interactive mode\n"
+--:-- Enter ::= Start intended break
+--:-- l | L ::= Start long break
+--:-- i | I ::= Disable interactive mode\n"
 
     while (( "${#option[@]}" != 1 || "${#option}" != 1 )); do
       read -rp "--:-- Choose one option: " option
@@ -64,10 +64,10 @@ interactive_prompt() {
       l | L)
         if [[ "$long_break" != true ]]; then
           break_counter=0
-          printf "%(%R)T Starting forced long break of %s minutes\n" -1 "$(( break_time / 60 ))"
+          printf "%(%R)T Starting early long break of %s minutes\n" -1 "$(( break_time / 60 ))"
           return 3
         fi
-        printf "%(%R)T Starting long break of %s minutes (already scheduled)\n" -1 "$(( break_time / 60 ))"
+        printf "%(%R)T Starting already intended long break of %s minutes\n" -1 "$(( break_time / 60 ))"
         ;;
       * )
         printf "%(%R)T Starting break\n" -1

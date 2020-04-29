@@ -9,5 +9,4 @@ Options:
 *  `-i`, `--interactive` Enables interactive options before each break
 *  `-t`, `--break-time`  Sets the time in minutes for the long breaks
 
-
 Pro-tip: Use Android's [Focus Mode](https://www.blog.google/products/android/android-focus-mode/) to snooze distracting apps during the Pomodoros.

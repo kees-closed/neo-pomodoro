@@ -88,15 +88,15 @@ interactive_prompt() {
 
 
 pomodoro_timer() {
-  local timer=$(( $1 / 60 ))
+  local timer="$(( $1 / 60 ))"
   wait_minute=true
 
   for (( minutes=0; minutes <= timer; minutes++ )); do
-    local work_left=$(( timer - minutes ))
+    local work_left="$(( timer - minutes ))"
 
     if (( work_left == 0 )); then
       (( break_counter++ ))
-      local breaks_taken=$(( breaks - break_counter ))
+      local breaks_taken="$(( breaks - break_counter ))"
       wait_minute=false
 
       if (( breaks_taken < 0 )); then

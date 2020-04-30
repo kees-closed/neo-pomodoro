@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -r work_time="1500"
+declare -r work_time="60"
 break_counter="0"
 break_time="1800"
 breaks="4"
@@ -56,34 +56,35 @@ interactive_prompt() {
     printf -- "--:-- l | L ::= Start long break\n"
     printf -- "--:-- i | I ::= Stop interactive mode\n"
 
-    while (( "${#option[@]}" != 1 || "${#option}" != 1 )); do
-      read -rp "--:-- Choose one option: " option
-      if [[ -z "$option" ]]; then
-        break
-      fi
+    while read -rp "--:-- Choose one option: " option; do
+      case "$option" in
+        i | I)
+          interactive=false
+          printf "%(%R)T Break started, interactive mode disabled\n" -1
+          break
+          ;;
+        l | L)
+          if [[ "$break_counter" != "0" ]]; then
+            break_counter="0"
+            printf "%(%R)T Starting early long break of %s minutes\n" -1 "$(( break_time / 60 ))"
+            return 3
+          fi
+          printf "%(%R)T Starting already intended long break of %s minutes\n" -1 "$(( break_time / 60 ))"
+          break
+          ;;
+        s | S)
+          printf -- "--:-- Skipping break\n"
+          return 4
+          break
+          ;;
+        "")
+          printf "%(%R)T Starting break\n" -1
+          break
+          ;;
+        *)
+          printf -- "--:-- %s is an invalid option\n" "$option"
+      esac
     done
-
-    case "$option" in
-      i | I)
-        interactive=false
-        printf "%(%R)T Break started, interactive mode disabled\n" -1
-        ;;
-      l | L)
-        if [[ "$break_counter" != "0" ]]; then
-          break_counter="0"
-          printf "%(%R)T Starting early long break of %s minutes\n" -1 "$(( break_time / 60 ))"
-          return 3
-        fi
-        printf "%(%R)T Starting already intended long break of %s minutes\n" -1 "$(( break_time / 60 ))"
-        ;;
-      s | S)
-        printf "%(%R)T Skipping break\n" -1
-        return 4
-        ;;
-      * )
-        printf "%(%R)T Starting break\n" -1
-        ;;
-    esac
   fi
 }
 

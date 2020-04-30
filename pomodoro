@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -r work_time="60"
+declare -r work_time="1500"
 break_counter="0"
 break_time="1800"
 breaks="4"
@@ -75,7 +75,6 @@ interactive_prompt() {
         s | S)
           printf -- "--:-- Skipping break\n"
           return 4
-          break
           ;;
         "")
           printf "%(%R)T Starting break\n" -1

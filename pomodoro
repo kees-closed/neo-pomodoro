@@ -9,9 +9,8 @@ icon_break_over="face-glasses"
 icon_long_break="face-cool"
 icon_short_break="face-tired"
 
+
 trap ctrl_c INT
-
-
 ctrl_c() {
   printf -- "\n--:-- Pomodoro timer stopped\n"
   exit 0
@@ -20,7 +19,7 @@ ctrl_c() {
 
 usage() {
   printf "This program helps managing time using the Pomodoro technique\n\n"
-  printf "Usage: ${0##*/} [OPTION]\n\n"
+  printf "Usage: %s [OPTION]\n\n" "${0##*/}"
   printf "Options:\n"
   printf "  -b, --breaks      Sets the amount of short breaks before a long break\n"
   printf "  -i, --interactive Enables interactive options before each break\n"
@@ -48,14 +47,13 @@ desktop_notification() {
 
 
 interactive_prompt() {
-  local long_break="$1"
   local option
 
   if [[ "$interactive" == true ]]; then
-    printf -- "--:-- Enter ::= Start intended break
---:-- s | S ::= Skip intended break
---:-- l | L ::= Start long break
---:-- i | I ::= Stop interactive mode\n"
+    printf -- "--:-- Enter ::= Start intended break\n"
+    printf -- "--:-- s | S ::= Skip intended break\n"
+    printf -- "--:-- l | L ::= Start long break\n"
+    printf -- "--:-- i | I ::= Stop interactive mode\n"
 
     while (( "${#option[@]}" != 1 || "${#option}" != 1 )); do
       read -rp "--:-- Choose one option: " option
@@ -70,8 +68,8 @@ interactive_prompt() {
         printf "%(%R)T Break started, interactive mode disabled\n" -1
         ;;
       l | L)
-        if [[ "$long_break" != true ]]; then
-          break_counter=0
+        if [[ "$break_counter" != "0" ]]; then
+          break_counter="0"
           printf "%(%R)T Starting early long break of %s minutes\n" -1 "$(( break_time / 60 ))"
           return 3
         fi
@@ -102,21 +100,24 @@ pomodoro_timer() {
       wait_minute=false
 
       if (( breaks_taken < 0 )); then
-        break_counter=0
+        break_counter="0"
         printf "%(%R)T Time to have a long break of %s minutes\n" -1 "$(( break_time / 60 ))"
         desktop_notification "$icon_long_break" "Time to have a long break of $(( break_time / 60 )) minutes"
-        interactive_prompt true
+        interactive_prompt
+
         case "$?" in
           4)
             continue
             ;;
         esac
+
         sleep "$break_time"
 
       elif (( breaks_taken >= 0 )); then
         printf "%(%R)T Time to have a short break of 5 minutes %s\n" -1 "($break_counter/$breaks)"
         desktop_notification "$icon_short_break" "Time to have a short break of 5 minutes ($break_counter/$breaks)"
         interactive_prompt
+
         case "$?" in
           3)
             sleep "$break_time"
@@ -126,6 +127,7 @@ pomodoro_timer() {
             continue
             ;;
         esac
+
         sleep 300
       fi
 
@@ -158,7 +160,7 @@ while (( $# > 0 )); do
       ;;
     -t | --break-time)
       shift
-      break_time=$(( $1 * 60 ))
+      break_time="$(( $1 * 60 ))"
       if (( break_time < 600 )); then
         printf "Error: Long breaks cannot be shorter than 10 minutes\n\n"
         usage

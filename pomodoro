@@ -24,6 +24,7 @@ usage() {
   printf "  -b, --breaks      Sets the amount of short breaks before a long break\n"
   printf "  -i, --interactive Enables interactive options before each break\n"
   printf "  -t, --break-time  Sets the time in minutes for the long breaks\n"
+  printf "  -h, --help        Display this help and exit\n"
 }
 
 

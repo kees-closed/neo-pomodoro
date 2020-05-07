@@ -33,7 +33,7 @@ desktop_notification() {
   local message="$2"
 
   if [[ "$interactive" == true && "$icon" != "$icon_break_over" ]]; then
-    message+=" (check prompt)"
+    local body="Check prompt"
   fi
 
   if [[ -x "$command_notify_send" && "$DESKTOP_SESSION" == "gnome" ]]; then
@@ -42,7 +42,8 @@ desktop_notification() {
       --app-name="Pomodoro" \
       --icon="/usr/share/icons/gnome/48x48/emotes/$icon.png" \
       --category="presence" \
-      "$message"
+      "$message" \
+      "$body"
   fi
 }
 

@@ -127,7 +127,7 @@ pomodoro_timer() {
         sleep 300
       fi
 
-      desktop_notification "$icon_break_over" "Time to work for $timer minutes"
+      desktop_notification "$icon_break_over" "Work for $timer minutes"
 
     elif (( work_left > 0 && (minutes % 10) == 0 )); then
       printf "%(%R)T Work for %s minutes\n" -1 "$work_left"

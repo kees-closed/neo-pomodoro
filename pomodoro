@@ -14,6 +14,7 @@ trap ctrl_c INT
 ctrl_c() {
   printf -- "\n--:-- i | I ::= Start/stop interactive mode\n"
   printf -- "--:-- q | Q ::= Stop pomodoro timer\n"
+
   while read -rp "--:-- Choose one option: " option; do
     case "$option" in
       i | I)
@@ -196,6 +197,7 @@ done
 
 printf -- "--:-- Pomodoro timer started\n"
 printf -- "--:-- Press Ctrl+C to open menu\n"
+
 while true; do
   pomodoro_timer "$work_time"
 done

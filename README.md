@@ -1,6 +1,6 @@
 # Pomodoro in Bash
 ## Usage
-This program helps managing time using the [Pomodoro technique](https://en.wikipedia.org/wiki/Pomodoro_Technique)
+This program helps managing time using the [Pomodoro technique](https://en.wikipedia.org/wiki/Pomodoro_Technique). Press Ctrl+C to open menu during runtime.
 
 Usage: `pomodoro [OPTION]`
 

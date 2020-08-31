@@ -12,8 +12,30 @@ icon_short_break="face-tired"
 
 trap ctrl_c INT
 ctrl_c() {
-  printf -- "\n--:-- Pomodoro timer stopped\n"
-  exit 0
+  printf -- "\n--:-- i | I ::= Start/stop interactive mode\n"
+  printf -- "--:-- q | Q ::= Stop pomodoro timer\n"
+  while read -rp "--:-- Choose one option: " option; do
+    case "$option" in
+      i | I)
+        interactive=$(( ! interactive ))
+        case "$interactive" in
+          1)
+            printf -- "--:-- Interactive mode now enabled\n"
+            break
+            ;;
+          0)
+            printf -- "--:-- Interactive mode now disabled\n"
+            break
+            ;;
+        esac
+        ;;
+      *)
+        printf -- "--:-- Pomodoro timer stopped"
+        trap - SIGINT
+        kill -SIGINT "$$"
+        ;;
+    esac
+  done
 }
 
 
@@ -32,7 +54,7 @@ desktop_notification() {
   local icon="$1"
   local message="$2"
 
-  if [[ "$interactive" == true && "$icon" != "$icon_break_over" ]]; then
+  if (( interactive == 1 )) && [[ "$icon" != "$icon_break_over" ]]; then
     local body="Check prompt"
   fi
 
@@ -51,7 +73,7 @@ desktop_notification() {
 interactive_prompt() {
   local option
 
-  if [[ "$interactive" == true ]]; then
+  if (( interactive == 1 )); then
     printf -- "--:-- Enter ::= Start intended break\n"
     printf -- "--:-- s | S ::= Skip intended break\n"
     printf -- "--:-- l | L ::= Start long break\n"
@@ -60,7 +82,7 @@ interactive_prompt() {
     while read -rp "--:-- Choose one option: " option; do
       case "$option" in
         i | I)
-          interactive=false
+          interactive=0
           printf "%(%R)T Break started, interactive mode disabled\n" -1
           break
           ;;
@@ -92,7 +114,7 @@ interactive_prompt() {
 
 pomodoro_timer() {
   local timer="$(( $1 / 60 ))"
-  wait_minute=true
+  wait_minute=1
 
   for (( minutes=0; minutes <= timer; minutes++ )); do
     local work_left="$(( timer - minutes ))"
@@ -100,7 +122,7 @@ pomodoro_timer() {
     if (( work_left == 0 )); then
       (( break_counter++ ))
       local breaks_taken="$(( breaks - break_counter ))"
-      wait_minute=false
+      wait_minute=0
 
       if (( breaks_taken < 0 )); then
         break_counter="0"
@@ -133,7 +155,7 @@ pomodoro_timer() {
       printf "%(%R)T Work for %s minutes\n" -1 "$work_left"
     fi
 
-    if [[ "$wait_minute" == true ]]; then
+    if (( wait_minute == 1 )); then
       sleep 60
     fi
     done
@@ -152,7 +174,7 @@ while (( $# > 0 )); do
       fi
       ;;
     -i | --interactive)
-      interactive=true
+      interactive=1
       ;;
     -t | --break-time)
       shift
@@ -173,6 +195,7 @@ done
 
 
 printf -- "--:-- Pomodoro timer started\n"
+printf -- "--:-- Press Ctrl+C to open menu\n"
 while true; do
   pomodoro_timer "$work_time"
 done

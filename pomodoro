@@ -10,13 +10,48 @@ icon_long_break="face-cool"
 icon_short_break="face-tired"
 
 
+usage() {
+  printf "This program helps managing time using the Pomodoro technique\n\n"
+  printf "Usage: %s [OPTION]\n\n" "${0##*/}"
+  printf "Options:\n"
+  printf "  -b, --breaks      Sets the amount of short breaks before a long break\n"
+  printf "  -i, --interactive Enables interactive options before each break\n"
+  printf "  -t, --break-time  Sets the time in minutes for the long breaks\n"
+  printf "  -h, --help        Display this help and exit\n"
+}
+
+
+quit_menu() {
+  printf -- "--:-- Enter ::= Close menu (cancel current break)\n"
+  printf -- "--:-- q | Q ::= Stop pomodoro timer\n"
+  printf -- "--:-- i | I ::= Start/stop interactive mode\n"
+}
+
+
+break_menu() {
+  printf -- "--:-- Enter ::= Start intended break\n"
+  printf -- "--:-- s | S ::= Skip intended break\n"
+  printf -- "--:-- l | L ::= Start long break\n"
+  printf -- "--:-- i | I ::= Stop interactive mode\n"
+  printf -- "--:-- [1-9] ::= Set currently taken short breaks\n"
+}
+
+
 trap ctrl_c INT
 ctrl_c() {
-  printf -- "\n--:-- i | I ::= Start/stop interactive mode\n"
-  printf -- "--:-- q | Q ::= Stop pomodoro timer\n"
-
+  printf "\n"
+  quit_menu
   while read -rp "--:-- Choose one option: " option; do
     case "$option" in
+      "")
+        printf -- "--:-- Closed quit menu\n"
+        break
+        ;;
+      q | Q)
+        printf -- "--:-- Pomodoro timer stopped"
+        trap - SIGINT
+        kill -SIGINT "$$"
+        ;;
       i | I)
         interactive=$(( ! interactive ))
         case "$interactive" in
@@ -31,23 +66,10 @@ ctrl_c() {
         esac
         ;;
       *)
-        printf -- "--:-- Pomodoro timer stopped"
-        trap - SIGINT
-        kill -SIGINT "$$"
-        ;;
+        printf -- "--:-- %s is an invalid option\n" "$option"
+        quit_menu
     esac
   done
-}
-
-
-usage() {
-  printf "This program helps managing time using the Pomodoro technique\n\n"
-  printf "Usage: %s [OPTION]\n\n" "${0##*/}"
-  printf "Options:\n"
-  printf "  -b, --breaks      Sets the amount of short breaks before a long break\n"
-  printf "  -i, --interactive Enables interactive options before each break\n"
-  printf "  -t, --break-time  Sets the time in minutes for the long breaks\n"
-  printf "  -h, --help        Display this help and exit\n"
 }
 
 
@@ -75,20 +97,20 @@ interactive_prompt() {
   local option
 
   if (( interactive == 1 )); then
-    printf -- "--:-- Enter ::= Start intended break\n"
-    printf -- "--:-- s | S ::= Skip intended break\n"
-    printf -- "--:-- l | L ::= Start long break\n"
-    printf -- "--:-- i | I ::= Stop interactive mode\n"
-
+    break_menu
     while read -rp "--:-- Choose one option: " option; do
       case "$option" in
+        "")
+          printf "%(%R)T Starting break\n" -1
+          break
+          ;;
         i | I)
           interactive=0
           printf "%(%R)T Break started, interactive mode disabled\n" -1
           break
           ;;
         l | L)
-          if [[ "$break_counter" != "0" ]]; then
+          if (( break_counter != 0 )); then
             break_counter="0"
             printf "%(%R)T Starting early long break of %s minutes\n" -1 "$(( break_time / 60 ))"
             sleep "$break_time"
@@ -101,12 +123,19 @@ interactive_prompt() {
           printf -- "--:-- Skipping break\n"
           return 4
           ;;
-        "")
-          printf "%(%R)T Starting break\n" -1
-          break
+        [1-9])
+          if (( option <= breaks )); then
+            break_counter="$option"
+            printf -- "--:-- Taken short breaks set to %s\n" "($break_counter/$breaks)"
+            break_menu
+            continue
+          fi
+          printf -- "--:-- Taken short breaks cannot be above the maximum short breaks of %s\n" "$breaks"
+          break_menu
           ;;
         *)
           printf -- "--:-- %s is an invalid option\n" "$option"
+          break_menu
       esac
     done
   fi
@@ -196,7 +225,7 @@ done
 
 
 printf -- "--:-- Pomodoro timer started\n"
-printf -- "--:-- Press Ctrl+C to open menu\n"
+printf -- "--:-- Press Ctrl+C to open menu or cancel any break\n"
 
 while true; do
   pomodoro_timer "$work_time"

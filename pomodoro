@@ -22,7 +22,7 @@ usage() {
 
 
 quit_menu() {
-  printf -- "--:-- Enter ::= Close menu (cancel current break)\n"
+  printf -- "--:-- Enter ::= Close menu\n"
   printf -- "--:-- q | Q ::= Stop pomodoro timer\n"
   printf -- "--:-- i | I ::= Start/stop interactive mode\n"
 }

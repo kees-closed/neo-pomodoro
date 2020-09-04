@@ -1,8 +1,8 @@
 # Pomodoro in Bash
 ## Usage
-This program helps managing time using the [Pomodoro technique](https://en.wikipedia.org/wiki/Pomodoro_Technique). Press Ctrl+C to open menu during runtime.
+This program helps managing time using the [Pomodoro technique](https://en.wikipedia.org/wiki/Pomodoro_Technique). Press Ctrl+C to open an option menu during runtime or cancel any break.
 
-Usage: `pomodoro [OPTION]`
+Usage: `pomodoro [OPTIONS]`
 
 Options:
 *  `-b`, `--breaks`      Sets the amount of short breaks before a long break

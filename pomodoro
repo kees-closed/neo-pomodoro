@@ -44,7 +44,7 @@ ctrl_c() {
   while read -rp "--:-- Choose one option: " option; do
     case "$option" in
       "")
-        printf -- "--:-- Closed quit menu\n"
+        printf -- "--:-- Closed menu\n"
         break
         ;;
       q | Q)
@@ -225,7 +225,7 @@ done
 
 
 printf -- "--:-- Pomodoro timer started\n"
-printf -- "--:-- Press Ctrl+C to open menu or cancel any break\n"
+printf -- "--:-- Press Ctrl+C to open menu\n"
 
 while true; do
   pomodoro_timer "$work_time"

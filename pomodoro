@@ -225,7 +225,7 @@ done
 
 
 printf -- "--:-- Pomodoro timer started\n"
-printf -- "--:-- Press Ctrl+C to open menu\n"
+printf -- "--:-- Press Ctrl-C to open menu\n"
 
 while true; do
   pomodoro_timer "$work_time"

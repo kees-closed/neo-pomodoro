@@ -113,7 +113,6 @@ interactive_prompt() {
           if (( break_counter != 0 )); then
             break_counter="0"
             printf "%(%R)T Starting early long break of %s minutes\n" -1 "$(( break_time / 60 ))"
-            sleep "$break_time"
             return 3
           fi
           printf "%(%R)T Starting already intended long break of %s minutes\n" -1 "$(( break_time / 60 ))"
@@ -161,10 +160,9 @@ pomodoro_timer() {
         interactive_prompt
 
         case "$?" in
+          0) sleep "$break_time";;
           4) continue;;
         esac
-
-        sleep "$break_time"
 
       elif (( breaks_taken >= 0 )); then
         printf "%(%R)T Time to have a short break of 5 minutes %s\n" -1 "($break_counter/$breaks)"
@@ -172,11 +170,10 @@ pomodoro_timer() {
         interactive_prompt
 
         case "$?" in
-          3) continue;;
+          0) sleep 300;;
+          3) sleep "$break_time";;
           4) continue;;
         esac
-
-        sleep 300
       fi
 
       desktop_notification "$icon_break_over" "Work for $timer minutes"

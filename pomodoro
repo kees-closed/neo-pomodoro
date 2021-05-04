@@ -85,7 +85,7 @@ desktop_notification() {
     "$command_notify_send" \
       --urgency="critical" \
       --app-name="Pomodoro" \
-      --icon="/usr/share/icons/gnome/48x48/emotes/$icon.png" \
+      --icon="/usr/share/icons/Adwaita/48x48/emotes/$icon-symbolic.symbolic.png" \
       --category="presence" \
       "$message" \
       "$body"

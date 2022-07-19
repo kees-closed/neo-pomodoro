@@ -112,7 +112,7 @@ interactive_prompt() {
           break
           ;;
         i | I)
-          interactive=0
+          interactive="0"
           printf "%(%R)T Break started, interactive mode disabled\n" -1
           break
           ;;
@@ -208,7 +208,7 @@ while (( $# > 0 )); do
       fi
       ;;
     -i | --interactive)
-      interactive=1
+      interactive="1"
       ;;
     -t | --break-time)
       shift

@@ -237,7 +237,7 @@ while (( $# > 0 )); do
 done
 
 
-if [[ -f "$config_file" ]]; then
+if [[ -r "$config_file" ]]; then
   source "$config_file"
 fi
 

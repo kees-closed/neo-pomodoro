@@ -1,9 +1,15 @@
 #!/bin/bash
 
 declare -r work_time="1500"
+
+# In case you don't want to override these variables interactively
+# create ~/.config/pomodoro/pomodoro.conf and modify them.
+# E.g. to always have interactive mode: `interactive=1`
 break_counter="0"
-break_time="1800"
 breaks="4"
+interactive=0
+break_time="1800"
+config_file="$HOME/.config/$(basename $0)/$(basename $0).conf"
 command_notify_send="/usr/bin/notify-send"
 icon_break_over="face-glasses"
 icon_long_break="face-cool"
@@ -17,6 +23,7 @@ usage() {
   printf "  -b, --breaks      Sets the amount of short breaks before a long break\n"
   printf "  -i, --interactive Enables interactive options before each break\n"
   printf "  -t, --break-time  Sets the time in minutes for the long breaks\n"
+  printf "  -c, --config      Specifies an alternative configuration file\n"
   printf "  -h, --help        Display this help and exit\n"
 }
 
@@ -212,6 +219,15 @@ while (( $# > 0 )); do
         exit 1
       fi
       ;;
+    -c | --config)
+      shift
+      config_file="$1"
+      if ! [[ -r "$config_file" ]]; then
+        printf "Error: Alternative config file cannot be read\n\n"
+        usage
+        exit 1
+      fi
+      ;;
     *)
       usage
       exit 0
@@ -220,6 +236,10 @@ while (( $# > 0 )); do
   shift
 done
 
+
+if [[ -f "$config_file" ]]; then
+  source "$config_file"
+fi
 
 printf -- "--:-- Pomodoro timer started\n"
 printf -- "--:-- Press Ctrl-C to open menu\n"

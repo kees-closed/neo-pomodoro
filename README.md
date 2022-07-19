@@ -1,8 +1,8 @@
 # Pomodoro in Bash
 ## Usage
-This program helps managing time using the [Pomodoro technique](https://en.wikipedia.org/wiki/Pomodoro_Technique). Press Ctrl-C to open an option menu during runtime. If you want to override the default runtime variables, place the option variables that are at the top of the script in `~/.config/pomodoro/pomodoro.conf` and modify them.
+This program helps managing time using the [Pomodoro technique](https://en.wikipedia.org/wiki/Pomodoro_Technique). Press Ctrl-C to open an option menu during runtime. If you want to override the default runtime variables, place the option variables that are at the top of the script in `~/.config/neo-pomodoro/neo-pomodoro.conf` and modify them.
 
-Usage: `pomodoro [OPTIONS]`
+Usage: `neo-pomodoro [OPTIONS]`
 
 Options:
 *  `-b`, `--breaks`      Sets the amount of short breaks before a long break

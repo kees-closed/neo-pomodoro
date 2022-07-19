@@ -3,7 +3,7 @@
 declare -r work_time="1500"
 
 # In case you don't want to override these variables interactively
-# create ~/.config/pomodoro/pomodoro.conf and modify them.
+# create ~/.config/neo-pomodoro/neo-pomodoro.conf and modify them.
 # E.g. to always have interactive mode: `interactive=1`
 break_counter="0"
 breaks="4"

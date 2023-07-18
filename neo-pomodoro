@@ -7,7 +7,7 @@ declare -r work_time="1500"
 # E.g. to always have interactive mode: `interactive=1`
 break_counter="0"
 breaks="4"
-interactive="0"
+interactive=0
 break_time="1800"
 config_file="$HOME/.config/$(basename "$0")/$(basename "$0").conf"
 command_notify_send="/usr/bin/notify-send"
@@ -92,7 +92,7 @@ desktop_notification() {
     "$command_notify_send" \
       --urgency="critical" \
       --app-name="Pomodoro" \
-      --icon="/usr/share/icons/Adwaita/48x48/emotes/$icon-symbolic.symbolic.png" \
+      --icon="/usr/share/icons/Adwaita/32x32/emotes/$icon-symbolic.symbolic.png" \
       --category="presence" \
       "$message" \
       "$body"
@@ -112,7 +112,7 @@ interactive_prompt() {
           break
           ;;
         i | I)
-          interactive="0"
+          interactive=0
           printf "%(%R)T Break started, interactive mode disabled\n" -1
           break
           ;;
@@ -208,7 +208,7 @@ while (( $# > 0 )); do
       fi
       ;;
     -i | --interactive)
-      interactive="1"
+      interactive=1
       ;;
     -t | --break-time)
       shift
